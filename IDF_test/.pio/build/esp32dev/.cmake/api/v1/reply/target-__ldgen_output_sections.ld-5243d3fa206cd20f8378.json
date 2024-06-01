@@ -1,0 +1,461 @@
+{
+	"backtrace" : 5,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"__ldgen_process_template",
+			"target_linker_script",
+			"include"
+		],
+		"files" : 
+		[
+			"C:/Users/seand/.platformio/packages/framework-espidf/tools/cmake/ldgen.cmake",
+			"C:/Users/seand/.platformio/packages/framework-espidf/tools/cmake/utilities.cmake",
+			"C:/Users/seand/.platformio/packages/framework-espidf/components/esp_system/ld/ld.cmake",
+			"C:/Users/seand/.platformio/packages/framework-espidf/components/esp_system/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 3
+			},
+			{
+				"command" : 3,
+				"file" : 3,
+				"line" : 59,
+				"parent" : 0
+			},
+			{
+				"file" : 2,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 2,
+				"line" : 18,
+				"parent" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 148,
+				"parent" : 3
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 81,
+				"parent" : 4
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "__idf_esp_ringbuf::@ad62994b1ce98b81017d"
+		},
+		{
+			"id" : "__idf___pio_env::@8ed72ffb2edf9d360e6d"
+		},
+		{
+			"id" : "__idf_asio::@db1a8833e22596808d70"
+		},
+		{
+			"id" : "__idf_unity::@fec746937506b5690992"
+		},
+		{
+			"id" : "__idf_cbor::@54bec30243cbf65f6214"
+		},
+		{
+			"id" : "__idf_cmock::@38f9eb59693b7394f54c"
+		},
+		{
+			"id" : "__idf_protocomm::@d76d01c8dec06205e1fc"
+		},
+		{
+			"id" : "__idf_mdns::@2f076c6da9dadb273cdc"
+		},
+		{
+			"id" : "__idf_esp_lcd::@d5a84597e1633c9ab0d3"
+		},
+		{
+			"id" : "__idf_protobuf-c::@b14513c4bd859268ec22"
+		},
+		{
+			"id" : "__idf_esp_local_ctrl::@d6aad58d2946e56208ef"
+		},
+		{
+			"id" : "__idf_esp_websocket_client::@2aa04d350e0c9afab7cd"
+		},
+		{
+			"id" : "__idf_expat::@af4f74c6fac3f93a3341"
+		},
+		{
+			"id" : "__idf_esp_hid::@15df40e16a5d8775dd9b"
+		},
+		{
+			"id" : "__idf_coap::@9ea4196552bc90428972"
+		},
+		{
+			"id" : "__idf_esp_adc_cal::@dc736dc1d836ef36c9a5"
+		},
+		{
+			"id" : "__idf_wifi_provisioning::@9d7e7ffe1b15746c1098"
+		},
+		{
+			"id" : "__idf_spiffs::@df881b71474064c86689"
+		},
+		{
+			"id" : "__idf_perfmon::@aac0f647c32bb8f54a67"
+		},
+		{
+			"id" : "__idf_src::@2478b13de56d3028f688"
+		},
+		{
+			"id" : "__idf_i2cdev::@91d7f992952b09ba10c5"
+		},
+		{
+			"id" : "__idf_fatfs::@75ac1d9b25dacc8cc9e7"
+		},
+		{
+			"id" : "__idf_wear_levelling::@cb21b0d7c0815cff11c6"
+		},
+		{
+			"id" : "__idf_freemodbus::@de63ca74a1babc26b29c"
+		},
+		{
+			"id" : "__idf_jsmn::@88dec008f06e3af609d0"
+		},
+		{
+			"id" : "__idf_json::@c78a8bdc820334f01148"
+		},
+		{
+			"id" : "__idf_mqtt::@c1ab2c6a99226d1f4b56"
+		},
+		{
+			"id" : "__idf_openssl::@e614527ea5fe5ca5f395"
+		},
+		{
+			"id" : "__idf_libsodium::@66e4f5d448f23c9449a2"
+		},
+		{
+			"id" : "__idf_ads111x::@a5bf0e81c80784f29f53"
+		},
+		{
+			"id" : "__idf_ads130e08::@1da63514e82640a11fb4"
+		},
+		{
+			"id" : "__idf_am2320::@249a6c9d1269d56584ff"
+		},
+		{
+			"id" : "__idf_aht::@324175f4ddef93152ee0"
+		},
+		{
+			"id" : "__idf_bh1750::@ca0879856405af52d560"
+		},
+		{
+			"id" : "__idf_bh1900nux::@bcd4161df221c39b1b16"
+		},
+		{
+			"id" : "__idf_bme680::@6d3a90b37739a4ec5266"
+		},
+		{
+			"id" : "__idf_bmp180::@44ef62e9a1f4c5acb130"
+		},
+		{
+			"id" : "__idf_bmp280::@1cb4abfca262dfa63274"
+		},
+		{
+			"id" : "__idf_color::@3563b3c46f8018782176"
+		},
+		{
+			"id" : "__idf_dht::@027e9a0b39a9767cba1f"
+		},
+		{
+			"id" : "__idf_ccs811::@03a2cc9fd77387706953"
+		},
+		{
+			"id" : "__idf_button::@4e15bdd2084979f3b8e2"
+		},
+		{
+			"id" : "__idf_calibration::@f1ddbfde84933ea2b00b"
+		},
+		{
+			"id" : "__idf_lib8tion::@76344a97234cc2355af2"
+		},
+		{
+			"id" : "__idf_ds1302::@c1b455cdb33c25bc956f"
+		},
+		{
+			"id" : "__idf_dps310::@b7e7b0844f6cdc780f46"
+		},
+		{
+			"id" : "__idf_ds1307::@11faad6676f1322d1c29"
+		},
+		{
+			"id" : "__idf_onewire::@7b2885c970915e9e391f"
+		},
+		{
+			"id" : "__idf_icm42670::@e41ad96b9dc16cc83838"
+		},
+		{
+			"id" : "__idf_hx711::@d39734a9d3b76e9bd13c"
+		},
+		{
+			"id" : "__idf_ht16k33::@149272d7831ca9dc3c71"
+		},
+		{
+			"id" : "__idf_hts221::@c68275aebc765e77d2c5"
+		},
+		{
+			"id" : "__idf_impulse_sensor::@f500478645317e222e1f"
+		},
+		{
+			"id" : "__idf_ina3221::@753f3313a8809a7c8be7"
+		},
+		{
+			"id" : "__idf_l3gx::@8ebb011a43de0946033b"
+		},
+		{
+			"id" : "__idf_ina219::@3a760bfa1e629a7d1730"
+		},
+		{
+			"id" : "__idf_ina260::@15e05a688d982bf8c6b3"
+		},
+		{
+			"id" : "__idf_ds18x20::@d3511c0d7b04c16fd84d"
+		},
+		{
+			"id" : "__idf_encoder::@532bcc6efaf6f8bc3fcf"
+		},
+		{
+			"id" : "__idf_ds3502::@8e2e4be53b5cc60bfa74"
+		},
+		{
+			"id" : "__idf_ds3231::@3d65f952da532911dc11"
+		},
+		{
+			"id" : "__idf_example::@ff1a256b2aa92313a572"
+		},
+		{
+			"id" : "__idf_framebuffer::@3064cb52b6baf94c1cf1"
+		},
+		{
+			"id" : "__idf_hd44780::@b3339f0285690a317158"
+		},
+		{
+			"id" : "__idf_hdc1000::@1e2e2b2a9f51b8507e85"
+		},
+		{
+			"id" : "__idf_hmc5883l::@516f540aa2f9d8a5ec32"
+		},
+		{
+			"id" : "__idf_scd30::@b186e60791dec9b6b8cc"
+		},
+		{
+			"id" : "__idf_qmp6988::@340c83310d7c863d233b"
+		},
+		{
+			"id" : "__idf_qmc5883l::@d502def1c120bce4e53e"
+		},
+		{
+			"id" : "__idf_rda5807m::@3a4cc77f6369f1c5081f"
+		},
+		{
+			"id" : "__idf_scd4x::@07ab87c4dd2d1fce1d8b"
+		},
+		{
+			"id" : "__idf_sfa3x::@8d2537b91e900ffd87e8"
+		},
+		{
+			"id" : "__idf_sgp40::@8a39d67eefb567bc3979"
+		},
+		{
+			"id" : "__idf_sgm58031::@bed3d4fb75471483a8ca"
+		},
+		{
+			"id" : "__idf_sht3x::@0727684e586476d63107"
+		},
+		{
+			"id" : "__idf_sht4x::@84f420ecb8ee2e18d1c5"
+		},
+		{
+			"id" : "__idf_lsm303::@d05b49e33d5af6fc21ba"
+		},
+		{
+			"id" : "__idf_led_strip_spi::@f5c1a1ff8bbdcdc13789"
+		},
+		{
+			"id" : "__idf_led_strip::@aa443316a99fb884b8ed"
+		},
+		{
+			"id" : "__idf_lc709203f::@75a006659d1b71b5f489"
+		},
+		{
+			"id" : "__idf_lm75::@a50fc8411e3784b908ca"
+		},
+		{
+			"id" : "__idf_ls7366r::@7091e846383873c66a1a"
+		},
+		{
+			"id" : "__idf_max1704x::@3c1983e7ca9c57f4c893"
+		},
+		{
+			"id" : "__idf_max31855::@eb8599b8535cd7d120b4"
+		},
+		{
+			"id" : "__idf_max31725::@e5be4591dc0873bc89ce"
+		},
+		{
+			"id" : "__idf_max7219::@18d1b7798338784c3a5d"
+		},
+		{
+			"id" : "__idf_mcp23008::@7329b4e653efec0ddfec"
+		},
+		{
+			"id" : "__idf_mcp342x::@1490d8634d06d93002b9"
+		},
+		{
+			"id" : "__idf_mcp23x17::@a84000afb6ec9e2746dc"
+		},
+		{
+			"id" : "__idf_max31865::@24364a4f572a5d0738cc"
+		},
+		{
+			"id" : "__idf_mcp9808::@03c9880d553a39754d32"
+		},
+		{
+			"id" : "__idf_mcp4725::@2084794f5d061bc98d45"
+		},
+		{
+			"id" : "__idf_mcp960x::@87f75c08757ab02c6689"
+		},
+		{
+			"id" : "__idf_mhz19b::@2926809f09c5c51835a6"
+		},
+		{
+			"id" : "__idf_ms5611::@b71dcfb3eb4d339d1fb8"
+		},
+		{
+			"id" : "__idf_pca9685::@8fe1311851a28eb58d5a"
+		},
+		{
+			"id" : "__idf_noise::@f151358e8c0a8df10d17"
+		},
+		{
+			"id" : "__idf_pca9557::@c1ce78eba1b9e8f066b8"
+		},
+		{
+			"id" : "__idf_mpu6050::@87bfca84472e0113326f"
+		},
+		{
+			"id" : "__idf_mp2660::@b4fddf15a276a1e84bac"
+		},
+		{
+			"id" : "__idf_pcf8563::@a9155de1de4cd56dd3df"
+		},
+		{
+			"id" : "__idf_pcf8574::@173b8e20dbbcd0bf3e13"
+		},
+		{
+			"id" : "__idf_pcf8575::@b8430ee58fe6483c0ec1"
+		},
+		{
+			"id" : "__idf_pcf8591::@30c5933afbf28ffeb2bf"
+		},
+		{
+			"id" : "__idf_tca9548::@b5a40f4ecca00a876ddd"
+		},
+		{
+			"id" : "__idf_si7021::@702dce629ad118fb7014"
+		},
+		{
+			"id" : "__idf_sts3x::@4db9b3874e1c7e631751"
+		},
+		{
+			"id" : "__idf_sts21::@7f931a7d6f94fa6d2f32"
+		},
+		{
+			"id" : "__idf_tca6424a::@d03f467d91bad7d3237b"
+		},
+		{
+			"id" : "__idf_tca95x5::@a95d520220fe9bffcbe5"
+		},
+		{
+			"id" : "__idf_tps63101x::@f180210a7be436f1fa4d"
+		},
+		{
+			"id" : "__idf_tda74xx::@3473e957005c4cd65614"
+		},
+		{
+			"id" : "__idf_tsys01::@69d3a3b83e0dd909875d"
+		},
+		{
+			"id" : "__idf_tsl2591::@4c34cd21b21ae7f160cb"
+		},
+		{
+			"id" : "__idf_tsl4531::@3356bec7fba7aa845355"
+		},
+		{
+			"id" : "__idf_tsl2561::@99b2585c15f508b010ef"
+		},
+		{
+			"id" : "__idf_ultrasonic::@4f36ea1c96c7553832c6"
+		},
+		{
+			"id" : "__idf_veml7700::@ae71e5c463bfa6112aac"
+		},
+		{
+			"id" : "__idf_wiegand::@d632310fd763861d4856"
+		}
+	],
+	"id" : "__ldgen_output_sections.ld::@874df54e61e20112dfd4",
+	"name" : "__ldgen_output_sections.ld",
+	"paths" : 
+	{
+		"build" : "esp-idf/esp_system",
+		"source" : "C:/Users/seand/.platformio/packages/framework-espidf/components/esp_system"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				1,
+				2
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 5,
+			"isGenerated" : true,
+			"path" : ".pio/build/esp32dev/esp-idf/esp_system/CMakeFiles/__ldgen_output_sections.ld",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : ".pio/build/esp32dev/esp-idf/esp_system/CMakeFiles/__ldgen_output_sections.ld.rule",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : ".pio/build/esp32dev/esp-idf/esp_system/ld/sections.ld.rule",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "UTILITY"
+}
