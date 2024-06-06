@@ -17,32 +17,38 @@
 // Public Headers
 // Private Headers
 #include "LedBlockDisplay.h"
-
-#ifdef BLINK
+#define OOPTEST
+#ifdef NONTHREADOOPTEST
 extern "C"
 {
+
   void app_main()
   {
-    // Start the blink task
-    // Example: Blink an LED on GPIO 2 with a 1000ms delay
-    blink(GPIO_NUM_2, 1000);
+    LedBlockDisplay ledMatrix(HSPI_HOST, DMA_CHAN, PIN_NUM_CS, PIN_NUM_CLK, PIN_NUM_DIN);
+    ledMatrix.init();
+    uint64_t currentImage = 0;
+    while (1)
+    {
+      uint64_t new_image = 0;
+      for (int i = 0; i < 8; i++)
+      {
+        // Generate a random row of 8 bits
+        new_image |= ((uint64_t)esp_random() & 0xFF) << (i * 8);
+      }
+      currentImage = new_image;
+      ledMatrix.display(&currentImage);
+      vTaskDelay(pdMS_TO_TICKS(1000));
+    }
   }
 }
 #endif
 
-#ifndef BLINK
-// #define SPI_HOST
-#define DMA_CHAN 2
 
-#define PIN_NUM_CS GPIO_NUM_23
-#define PIN_NUM_CLK GPIO_NUM_5
-#define PIN_NUM_DIN GPIO_NUM_19
+
+#ifdef OOPTEST
 
 SemaphoreHandle_t xImageSemaphore;
-uint16_t currentImage = 0;
-LedBlockDisplay *ledMatrix;
-
-const char *TAG = "GENERATED_IMG";
+const char *TAG = "GENERATE_RAND_IMG";
 
 extern "C"
 {
@@ -51,69 +57,146 @@ extern "C"
 
   void app_main(void)
   {
-    
-     ledMatrix = new LedBlockDisplay(8);
-
+    // Declare the semaphore and the current image variable
     // Create a semaphore for synchronizing access to the current image
     xImageSemaphore = xSemaphoreCreateMutex();
+    if (xImageSemaphore == NULL)
+    {
+      ESP_LOGE(TAG, "Failed to create semaphore");
+      return;
+    }
+    uint64_t currentImage = 0;
 
     // Create tasks for generating random images and displaying them
-    xTaskCreate(generate_random_image_task, "GenerateRandomImage", 2048, NULL, 5, NULL);
-    xTaskCreate(display_image_task, "DisplayImage", 2048, NULL, 5, NULL);
+    xTaskCreate(generate_random_image_task, "GenerateRandomImage", STACK_SIZE_MEDIUM, &currentImage, 5, NULL);
+    xTaskCreate(display_image_task, "DisplayImage", STACK_SIZE_MEDIUM, &currentImage, 5, NULL);
 
     while (1)
     {
       vTaskDelay(pdMS_TO_TICKS(1000));
     }
-     delete (ledMatrix);
   }
 
   // Task to generate random 8x8 images
-void generate_random_image_task(void *pvParameters)
-{
-  while (1)
+  void generate_random_image_task(void *pvParameters)
   {
-    uint64_t new_image = 0;
-    for (int i = 0; i < 8; i++)
+    uint64_t *pCurrentImage = (uint64_t *)pvParameters;
+    while (1)
     {
-      // Generate a random row of 8 bits
-      new_image |= ((uint64_t)esp_random() & 0xFF) << (i * 8);
-    }
+      uint64_t new_image = 0;
+      for (int i = 0; i < 8; i++)
+      {
+        // Generate a random row of 8 bits
+        new_image |= ((uint64_t)esp_random() & 0xFF) << (i * 8);
+      }
 
-    // Safely update the currentImage using a semaphore
-    if (xSemaphoreTake(xImageSemaphore, portMAX_DELAY) == pdTRUE)
+      // Safely update the currentImage using a semaphore
+      if (xSemaphoreTake(xImageSemaphore, portMAX_DELAY) == pdTRUE)
+      {
+        *pCurrentImage = new_image;
+        xSemaphoreGive(xImageSemaphore);
+      }
+      uint64_t img = *pCurrentImage;
+      ESP_LOGD(TAG, "Generated num: 0x%016llx", img);
+
+      // Generate a new image every second
+      vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+  }
+
+  // Task to display the image on the LED matrix
+  void display_image_task(void *pvParameters)
+  {
+    uint64_t *pCurrentImage = (uint64_t *)pvParameters;
+    LedBlockDisplay ledMatrix(HSPI_HOST, DMA_CHAN, PIN_NUM_CS, PIN_NUM_CLK, PIN_NUM_DIN);
+    ledMatrix.init();
+    ESP_LOGD(TAG, "DisplayTask setup");
+    while (1)
     {
-      currentImage = new_image;
-      xSemaphoreGive(xImageSemaphore);
+      if (xSemaphoreTake(xImageSemaphore, portMAX_DELAY) == pdTRUE)
+      {
+        ESP_LOGD(TAG, "Displaying image");
+        uint64_t img = *pCurrentImage;
+        ledMatrix.display(&img);
+        xSemaphoreGive(xImageSemaphore);
+      }
+
+      // Update display every 100 milliseconds
+      vTaskDelay(pdMS_TO_TICKS(100));
     }
-
-    ESP_LOGD(TAG, "Displaying image: 0x%04x", currentImage);
-
-    // Generate a new image every second
-    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }
 
-// Task to display the image on the LED matrix
-void display_image_task(void *pvParameters)
+#endif
+
+#ifdef NONOOPTEST
+
+extern "C"
 {
-  while (1)
+  void app_main(void)
   {
-    blink(GPIO_NUM_2, 1000);
-    // Safely read the currentImage using a semaphore
-    if (xSemaphoreTake(xImageSemaphore, portMAX_DELAY) == pdTRUE)
+    // Configuration for the SPI bus
+    spi_bus_config_t buscfg = {
+        .mosi_io_num = PIN_NUM_DIN,
+        .miso_io_num = -1, // MISO is not used
+        .sclk_io_num = PIN_NUM_CLK,
+        .quadwp_io_num = -1,
+        .quadhd_io_num = -1,
+        .data4_io_num = -1, // Initialize unused fields to -1
+        .data5_io_num = -1,
+        .data6_io_num = -1,
+        .data7_io_num = -1,
+        .max_transfer_sz = 32,
+        .flags = 0,     // Initialize flags
+        .intr_flags = 0 // Initialize intr_flags
+    };
+
+    // Initialize the SPI bus
+    ESP_ERROR_CHECK(spi_bus_initialize(HSPI_HOST, &buscfg, DMA_CHAN));
+
+    // Initialize the MAX7219 device descriptor
+    max7219_t dev;
+    ESP_ERROR_CHECK(max7219_init_desc(&dev, HSPI_HOST, MAX7219_MAX_CLOCK_SPEED_HZ, PIN_NUM_CS));
+
+    // Set the number of cascaded devices (1 for a single 8x8 matrix)
+    dev.cascade_size = 1;
+    dev.digits = 8;
+
+    // Initialize the MAX7219 device
+    ESP_ERROR_CHECK(max7219_init(&dev));
+
+    // Set brightness
+    ESP_ERROR_CHECK(max7219_set_brightness(&dev, 8)); // Set brightness level (0-15)
+
+    // Clear display
+    ESP_ERROR_CHECK(max7219_clear(&dev));
+
+    // Draw text on the 8x8 LED matrix
+    ESP_ERROR_CHECK(max7219_draw_text_7seg(&dev, 0, "HELLO"));
+
+    // Define a simple 8x8 smiley face pattern
+    uint64_t smiley_face = 0x3c42a581a599423c;
+
+    // Draw the smiley face on the 8x8 LED matrix
+    ESP_ERROR_CHECK(max7219_draw_image_8x8(&dev, 0, &smiley_face));
+
+    // Example of drawing text after a delay
+    vTaskDelay(pdMS_TO_TICKS(3000));
+    ESP_ERROR_CHECK(max7219_clear(&dev));
+    ESP_ERROR_CHECK(max7219_draw_text_7seg(&dev, 0, "ESP32"));
+
+    while (1)
     {
-      //ledMatrix->display(&currentImage);
-      xSemaphoreGive(xImageSemaphore);
+      ESP_ERROR_CHECK(max7219_draw_image_8x8(&dev, 0, &smiley_face));
+      vTaskDelay(pdMS_TO_TICKS(1000));
     }
 
-    // Update display every 100 milliseconds
-    vTaskDelay(pdMS_TO_TICKS(100));
+    // Free the MAX7219 device descriptor
+    ESP_ERROR_CHECK(max7219_free_desc(&dev));
+
+    // Free the SPI bus
+    ESP_ERROR_CHECK(spi_bus_free(HSPI_HOST));
   }
 }
-
-}
-
-
 
 #endif

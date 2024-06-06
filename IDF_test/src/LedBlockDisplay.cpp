@@ -1,9 +1,16 @@
 #include "LedBlockDisplay.h"
 
-bool LedBlockDisplay::isSpiInitialized = false;
 
-LedBlockDisplay::LedBlockDisplay(int matrixSize, int matrixCount, int brightness)
+LedBlockDisplay::LedBlockDisplay(spi_host_device_t host, int dma_chan, int pin_cs, int pin_clk, int pin_din)
+        : host(host), dma_chan(dma_chan), pin_cs(pin_cs), pin_clk(pin_clk), pin_din(pin_din) 
+{}
+
+void LedBlockDisplay::init(int matrixSize, int matrixCount, uint8_t brightness)
 {
+    const char *TAG = "INITIALIZATION";
+    // Log the start of the init function
+    ESP_LOGI(TAG, "Initializing LED matrix display...");
+
     // Configuration for the SPI bus
     spi_bus_config_t buscfg = {
         .mosi_io_num = PIN_NUM_DIN,
@@ -11,7 +18,7 @@ LedBlockDisplay::LedBlockDisplay(int matrixSize, int matrixCount, int brightness
         .sclk_io_num = PIN_NUM_CLK,
         .quadwp_io_num = -1,
         .quadhd_io_num = -1,
-        .data4_io_num = -1, // Initialize data4_io_num to -1 to avoid the warning
+        .data4_io_num = -1,
         .data5_io_num = -1, 
         .data6_io_num = -1, 
         .data7_io_num = -1, 
@@ -20,29 +27,67 @@ LedBlockDisplay::LedBlockDisplay(int matrixSize, int matrixCount, int brightness
         .intr_flags = 0
     };
 
-    isSpiInitialized = true; 
     // Initialize the SPI bus
-    ESP_ERROR_CHECK(spi_bus_initialize(SPI_HOST, &buscfg, DMA_CHAN));
+    ESP_LOGI(TAG, "Initializing SPI bus...");
+    esp_err_t ret = spi_bus_initialize(HSPI_HOST, &buscfg, DMA_CHAN);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize SPI bus: %s", esp_err_to_name(ret));
+        return;
+    }
 
-    ESP_ERROR_CHECK(max7219_init_desc(&dev, SPI_HOST, MAX7219_MAX_CLOCK_SPEED_HZ, PIN_NUM_CS));
+    ESP_LOGI(TAG, "SPI bus initialized successfully.");
+
+    ESP_LOGI(TAG, "Initializing MAX7219 descriptor...");
+    ret = max7219_init_desc(&dev, HSPI_HOST, MAX7219_MAX_CLOCK_SPEED_HZ, PIN_NUM_CS);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize MAX7219 descriptor: %s", esp_err_to_name(ret));
+        return;
+    }
+
+    ESP_LOGI(TAG, "MAX7219 descriptor initialized successfully.");
 
     // Set the number of cascaded devices (1 for a single 8x8 matrix)
     dev.cascade_size = matrixCount;
     dev.digits = matrixSize;
 
     // Initialize the MAX7219 device
-    ESP_ERROR_CHECK(max7219_init(&dev));
+    ESP_LOGI(TAG, "Initializing MAX7219 device...");
+    ret = max7219_init(&dev);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize MAX7219 device: %s", esp_err_to_name(ret));
+        return;
+    }
+
+    ESP_LOGI(TAG, "MAX7219 device initialized successfully.");
 
     // Set brightness
-    ESP_ERROR_CHECK(max7219_set_brightness(&dev, brightness)); // Set brightness level (0-15)
+    ESP_LOGI(TAG, "Setting brightness...");
+    ret = max7219_set_brightness(&dev, brightness);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set brightness: %s", esp_err_to_name(ret));
+        return;
+    }
+
+    ESP_LOGI(TAG, "Brightness set successfully.");
 
     // Clear display
-    ESP_ERROR_CHECK(max7219_clear(&dev));
+    ESP_LOGI(TAG, "Clearing display...");
+    ret = max7219_clear(&dev);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to clear display: %s", esp_err_to_name(ret));
+        return;
+    }
+
+    ESP_LOGI(TAG, "Display cleared successfully.");
+    ESP_LOGI(TAG, "LED matrix display initialized.");
 }
 
-void LedBlockDisplay::display(const void * image)
+
+void LedBlockDisplay::display(void* image)
 {
-     ESP_ERROR_CHECK(max7219_draw_image_8x8(&dev, 0, &image));
+    printf("LedBlockDisplay::display called with image: 0x%016llx\n", *(uint64_t*)image);
+    uint64_t img = *(uint64_t*)image;
+    ESP_ERROR_CHECK(max7219_draw_image_8x8(&dev, 0, &img));
 }
 
 LedBlockDisplay::~LedBlockDisplay()
@@ -51,5 +96,5 @@ LedBlockDisplay::~LedBlockDisplay()
     ESP_ERROR_CHECK(max7219_free_desc(&dev));
 
     // Free the SPI bus
-    ESP_ERROR_CHECK(spi_bus_free(SPI_HOST));
+    ESP_ERROR_CHECK(spi_bus_free(HSPI_HOST));
 }

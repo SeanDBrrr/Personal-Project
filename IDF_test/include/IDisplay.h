@@ -11,8 +11,8 @@ class IDisplay
 {
 public:
     virtual ~IDisplay() = default;
-
-    virtual void display(const void *) = 0;
+    virtual void init(int, int, uint8_t) = 0;
+    virtual void display(void*) = 0;
 };
 
 #ifdef __cplusplus

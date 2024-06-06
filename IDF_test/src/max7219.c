@@ -216,9 +216,13 @@ esp_err_t max7219_set_digit(max7219_t *dev, uint8_t digit, uint8_t val)
 
     ESP_LOGV(TAG, "Chip %d, digit %d val 0x%02x", c, d, val);
 
-    CHECK(send(dev, c, (REG_DIGIT_0 + ((uint16_t)d << 8)) | val));
+     esp_err_t ret = send(dev, c, (REG_DIGIT_0 + ((uint16_t)d << 8)) | val);
+    if (ret != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Failed to send data to MAX7219");
+    }
 
-    return ESP_OK;
+    return ret;
 }
 
 esp_err_t max7219_clear(max7219_t *dev)
@@ -255,9 +259,13 @@ esp_err_t max7219_draw_text_7seg(max7219_t *dev, uint8_t pos, const char *s)
 esp_err_t max7219_draw_image_8x8(max7219_t *dev, uint8_t pos, const void *image)
 {
     CHECK_ARG(dev && image);
-
+    printf("max7219_draw_image_8x8 called with image: 0x%016llx\n", *(uint64_t*)image);
     for (uint8_t i = pos, offs = 0; i < dev->digits && offs < 8; i++, offs++)
-        max7219_set_digit(dev, i, *((uint8_t *)image + offs));
+    {
+        uint8_t row = *((uint8_t *)image + offs);
+        printf("max7219_draw_image_8x8 setting digit %d to 0x%02x\n", i, row);
+        max7219_set_digit(dev, i, row);
+        }
 
     return ESP_OK;
 }

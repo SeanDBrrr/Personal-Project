@@ -3,33 +3,41 @@
 #include "stdio.h"
 #include "cstring"
 #include <esp_err.h>
+#include <esp_log.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
 #include "IDisplay.h"
 #include "max7219.h"
 #include "max7219_priv.h"
 
-const gpio_num_t PIN_NUM_CS = GPIO_NUM_23;
-const gpio_num_t PIN_NUM_CLK = GPIO_NUM_5;
-const gpio_num_t PIN_NUM_DIN = GPIO_NUM_19;
+const gpio_num_t PIN_NUM_CS = GPIO_NUM_5;
+const gpio_num_t PIN_NUM_CLK = GPIO_NUM_18;
+const gpio_num_t PIN_NUM_DIN = GPIO_NUM_23;
 const int DMA_CHAN = 2;
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-class LedBlockDisplay : IDisplay
-{
-private:
-    max7219_t dev;
-    static bool isSpiInitialized;
-   
-public:
-    LedBlockDisplay(int matrixSize, int matrixCount = 1, int brightness = 8);
-    void display(const void *image);
-    ~LedBlockDisplay();
-};
+    class LedBlockDisplay : IDisplay
+    {
+    private:
+        spi_host_device_t host;
+        int dma_chan;
+        int pin_cs;
+        int pin_clk;
+        int pin_din;
+        max7219_t dev;
 
+    public:
+        LedBlockDisplay(spi_host_device_t host, int dma_chan, int pin_cs, int pin_clk, int pin_din);
+        void init(int = 8, int = 1, uint8_t = 8) override;
+        void display(void* image) override;
+        ~LedBlockDisplay();
+    };
 
 #ifdef __cplusplus
 }
