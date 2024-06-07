@@ -18,9 +18,8 @@ const gpio_num_t PIN_NUM_CLK = GPIO_NUM_18;
 const gpio_num_t PIN_NUM_DIN = GPIO_NUM_23;
 const int DMA_CHAN = 2;
 
-const char *TAG = "GENERATE_RAND_IMG";
-SemaphoreHandle_t xImageSemaphore;
-
+extern const char *TAG;
+extern SemaphoreHandle_t xImageSemaphore;
 #ifdef __cplusplus
 extern "C"
 {

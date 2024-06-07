@@ -1,5 +1,7 @@
 #include "LedBlockDisplay.h"
 
+const char *TAG = "GENERATE_RAND_IMG"; 
+SemaphoreHandle_t xImageSemaphore;
 
 LedBlockDisplay::LedBlockDisplay(spi_host_device_t host, int dma_chan, int pin_cs, int pin_clk, int pin_din)
         : host(host), dma_chan(dma_chan), pin_cs(pin_cs), pin_clk(pin_clk), pin_din(pin_din) 
