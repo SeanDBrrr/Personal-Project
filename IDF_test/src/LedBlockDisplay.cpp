@@ -98,3 +98,51 @@ LedBlockDisplay::~LedBlockDisplay()
     // Free the SPI bus
     ESP_ERROR_CHECK(spi_bus_free(HSPI_HOST));
 }
+
+  // Task to generate random 8x8 images
+  void generate_random_image_task(void *pvParameters)
+  {
+    uint64_t *pCurrentImage = (uint64_t *)pvParameters;
+    while (1)
+    {
+      uint64_t new_image = 0;
+      for (int i = 0; i < 8; i++)
+      {
+        // Generate a random row of 8 bits
+        new_image |= ((uint64_t)esp_random() & 0xFF) << (i * 8);
+      }
+
+      // Safely update the currentImage using a semaphore
+      if (xSemaphoreTake(xImageSemaphore, portMAX_DELAY) == pdTRUE)
+      {
+        *pCurrentImage = new_image;
+        xSemaphoreGive(xImageSemaphore);
+      }
+      uint64_t img = *pCurrentImage;
+      ESP_LOGD(TAG, "Generated num: 0x%016llx", img);
+
+      // Generate a new image every second
+      vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+  }
+
+  // Task to display the image on the LED matrix
+  void display_image_task(void *pvParameters)
+  {
+    uint64_t *pCurrentImage = (uint64_t *)pvParameters;
+    LedBlockDisplay ledMatrix(HSPI_HOST, DMA_CHAN, PIN_NUM_CS, PIN_NUM_CLK, PIN_NUM_DIN);
+    ledMatrix.init();
+    ESP_LOGD(TAG, "DisplayTask setup");
+    while (1)
+    {
+      if (xSemaphoreTake(xImageSemaphore, portMAX_DELAY) == pdTRUE)
+      {
+        ESP_LOGD(TAG, "Displaying image");
+        uint64_t img = *pCurrentImage;
+        ledMatrix.display(&img);
+        xSemaphoreGive(xImageSemaphore);
+      }
+
+      vTaskDelay(pdMS_TO_TICKS(100));
+    }
+  }

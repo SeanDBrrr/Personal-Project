@@ -6,6 +6,7 @@
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include "freertos/semphr.h"
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
 #include "IDisplay.h"
@@ -16,6 +17,9 @@ const gpio_num_t PIN_NUM_CS = GPIO_NUM_5;
 const gpio_num_t PIN_NUM_CLK = GPIO_NUM_18;
 const gpio_num_t PIN_NUM_DIN = GPIO_NUM_23;
 const int DMA_CHAN = 2;
+
+const char *TAG = "GENERATE_RAND_IMG";
+SemaphoreHandle_t xImageSemaphore;
 
 #ifdef __cplusplus
 extern "C"
@@ -35,10 +39,12 @@ extern "C"
     public:
         LedBlockDisplay(spi_host_device_t host, int dma_chan, int pin_cs, int pin_clk, int pin_din);
         void init(int = 8, int = 1, uint8_t = 8) override;
-        void display(void* image) override;
+        void display(void *image) override;
         ~LedBlockDisplay();
     };
 
+    void generate_random_image_task(void *);
+    void display_image_task(void *);
 #ifdef __cplusplus
 }
 #endif
