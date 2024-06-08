@@ -133,7 +133,7 @@ LedBlockDisplay::~LedBlockDisplay()
   {
     uint64_t *pCurrentImage = (uint64_t *)pvParameters;
     LedBlockDisplay ledMatrix(HSPI_HOST, DMA_CHAN, PIN_NUM_CS, PIN_NUM_CLK, PIN_NUM_DIN);
-    ledMatrix.init();
+    ledMatrix.init(MATRIX_SIZE,MATRIX_COUNT, LED_BRIGHTNESS);
     ESP_LOGD(TAG, "DisplayTask setup");
     while (1)
     {
