@@ -18,8 +18,8 @@ extern "C"
   void app_main(void)
   {
     // Create a semaphore for synchronizing access to the current image
-    xImageSemaphore = xSemaphoreCreateMutex();
-    if (xImageSemaphore == NULL)
+    xImageMutex = xSemaphoreCreateMutex();
+    if (xImageMutex == NULL)
     {
       ESP_LOGE(TAG, "Failed to create semaphore");
       return;

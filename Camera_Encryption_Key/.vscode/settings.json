@@ -1,0 +1,10 @@
+{
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--rcfile=${workspaceFolder}/.pylintrc"
+    ],
+    "pylint.interpreter": [
+        "${workspaceFolder}/venv/Scripts/python.exe"
+    ]
+}

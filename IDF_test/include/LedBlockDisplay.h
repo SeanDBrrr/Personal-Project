@@ -22,7 +22,7 @@ const uint8_t LED_BRIGHTNESS = 5;
 const int DMA_CHAN = 2;
 
 extern const char *TAG;
-extern SemaphoreHandle_t xImageSemaphore;
+extern SemaphoreHandle_t xImageMutex;
 #ifdef __cplusplus
 extern "C"
 {
