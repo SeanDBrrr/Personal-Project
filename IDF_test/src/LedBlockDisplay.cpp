@@ -11,13 +11,12 @@ LedBlockDisplay::LedBlockDisplay(spi_host_device_t host, int dma_chan, int pin_c
 void LedBlockDisplay::init(int matrixSize, int matrixCount, uint8_t brightness)
 {
   const char *TAG = "INITIALIZATION";
-  // Log the start of the init function
   ESP_LOGI(TAG, "Initializing LED matrix display...");
 
-  // Configuration for the SPI bus
+// -1 = not used
   spi_bus_config_t buscfg = {
       .mosi_io_num = PIN_NUM_DIN,
-      .miso_io_num = -1, // MISO is not used
+      .miso_io_num = -1, 
       .sclk_io_num = PIN_NUM_CLK,
       .quadwp_io_num = -1,
       .quadhd_io_num = -1,
@@ -37,9 +36,7 @@ void LedBlockDisplay::init(int matrixSize, int matrixCount, uint8_t brightness)
     ESP_LOGE(TAG, "Failed to initialize SPI bus: %s", esp_err_to_name(ret));
     return;
   }
-
   ESP_LOGI(TAG, "SPI bus initialized successfully.");
-
   ESP_LOGI(TAG, "Initializing MAX7219 descriptor...");
   ret = max7219_init_desc(&dev, HSPI_HOST, MAX7219_MAX_CLOCK_SPEED_HZ, PIN_NUM_CS);
   if (ret != ESP_OK)
@@ -47,14 +44,10 @@ void LedBlockDisplay::init(int matrixSize, int matrixCount, uint8_t brightness)
     ESP_LOGE(TAG, "Failed to initialize MAX7219 descriptor: %s", esp_err_to_name(ret));
     return;
   }
-
   ESP_LOGI(TAG, "MAX7219 descriptor initialized successfully.");
-
   // Set the number of cascaded devices (1 for a single 8x8 matrix)
   dev.cascade_size = matrixCount;
   dev.digits = matrixSize;
-
-  // Initialize the MAX7219 device
   ESP_LOGI(TAG, "Initializing MAX7219 device...");
   ret = max7219_init(&dev);
   if (ret != ESP_OK)
@@ -62,10 +55,7 @@ void LedBlockDisplay::init(int matrixSize, int matrixCount, uint8_t brightness)
     ESP_LOGE(TAG, "Failed to initialize MAX7219 device: %s", esp_err_to_name(ret));
     return;
   }
-
   ESP_LOGI(TAG, "MAX7219 device initialized successfully.");
-
-  // Set brightness
   ESP_LOGI(TAG, "Setting brightness...");
   ret = max7219_set_brightness(&dev, brightness);
   if (ret != ESP_OK)
@@ -75,8 +65,6 @@ void LedBlockDisplay::init(int matrixSize, int matrixCount, uint8_t brightness)
   }
 
   ESP_LOGI(TAG, "Brightness set successfully.");
-
-  // Clear display
   ESP_LOGI(TAG, "Clearing display...");
   ret = max7219_clear(&dev);
   if (ret != ESP_OK)
@@ -84,7 +72,6 @@ void LedBlockDisplay::init(int matrixSize, int matrixCount, uint8_t brightness)
     ESP_LOGE(TAG, "Failed to clear display: %s", esp_err_to_name(ret));
     return;
   }
-
   ESP_LOGI(TAG, "Display cleared successfully.");
   ESP_LOGI(TAG, "LED matrix display initialized.");
 }
@@ -105,7 +92,6 @@ LedBlockDisplay::~LedBlockDisplay()
   ESP_ERROR_CHECK(spi_bus_free(HSPI_HOST));
 }
 
-
 //=======================================================================THREADS/TASKS=========================================================================================
 
 // Task to generate random 8x8 images
@@ -115,23 +101,19 @@ void generate_random_image_task(void *pvParameters)
   while (1)
   {
 
-    // Safely update the currentImage using a semaphore
     if (xSemaphoreTake(xImageMutex, portMAX_DELAY) == pdTRUE)
     {
       uint64_t new_image = 0;
       for (int i = 0; i < 8; i++)
       {
-        // Generate a random row of 8 bits
         new_image |= ((uint64_t)esp_random() & 0xFF) << (i * 8);
       }
 
       *pCurrentImage = new_image;
+      uint64_t img = *pCurrentImage;
+      ESP_LOGD(TAG, "Generated num: 0x%016llx", img);
       xSemaphoreGive(xImageMutex);
     }
-    uint64_t img = *pCurrentImage;
-    ESP_LOGD(TAG, "Generated num: 0x%016llx", img);
-
-    // Generate a new image every second
     vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }

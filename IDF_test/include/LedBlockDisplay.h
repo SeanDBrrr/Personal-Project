@@ -18,7 +18,7 @@ const gpio_num_t PIN_NUM_CLK = GPIO_NUM_18;
 const gpio_num_t PIN_NUM_DIN = GPIO_NUM_23;
 const int MATRIX_COUNT = 1;
 const int MATRIX_SIZE = 8;
-const uint8_t LED_BRIGHTNESS = 5;
+const uint8_t LED_BRIGHTNESS = 10;
 const int DMA_CHAN = 2;
 
 extern const char *TAG;
